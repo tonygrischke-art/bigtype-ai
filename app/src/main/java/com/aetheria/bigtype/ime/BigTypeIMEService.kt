@@ -7,6 +7,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
@@ -36,6 +38,10 @@ class BigTypeIMEService : InputMethodService(),
         
         fun updateState(state: State) {
             _currentState = state
+        }
+
+        override fun addObserver(observer: LifecycleObserver) {
+            // no-op for IME
         }
     }
 
