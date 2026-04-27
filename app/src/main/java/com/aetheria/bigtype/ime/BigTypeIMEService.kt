@@ -22,8 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class BigTypeIMEService : InputMethodService(),
     ViewModelStoreOwner,
-    SavedStateRegistryOwner,
-    LifecycleOwner {
+    SavedStateRegistryOwner {
 
     private val _viewModelStore = ViewModelStore()
     override val viewModelStore: ViewModelStore get() = _viewModelStore
@@ -31,21 +30,25 @@ class BigTypeIMEService : InputMethodService(),
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
     override val savedStateRegistry get() = savedStateRegistryController.savedStateRegistry
 
-    private var lifecycleRegistry: Lifecycle? = null
-
-    override val lifecycle: Lifecycle
-        get() = lifecycleRegistry ?: throw IllegalStateException("Lifecycle not initialized")
+    private val _lifecycleOwner = object : LifecycleOwner {
+        private val _lifecycleRegistry = object : Lifecycle() {
+            override fun getCurrentState(): State = State.INITIALIZED
+            fun setCurrentState(state: State) {
+                // no-op for IME
+            }
+        }
+        override val lifecycle: Lifecycle = _lifecycleRegistry
+    }
 
     override fun onCreate() {
         savedStateRegistryController.performRestore(null)
-        lifecycleRegistry = Lifecycle()
         super.onCreate()
     }
 
     override fun onCreateInputView(): View {
         return ComposeView(this).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
-            setViewTreeLifecycleOwner(this@BigTypeIMEService)
+            setViewTreeLifecycleOwner(_lifecycleOwner)
             setViewTreeViewModelStoreOwner(this@BigTypeIMEService)
             setViewTreeSavedStateRegistryOwner(this@BigTypeIMEService)
             setContent {
