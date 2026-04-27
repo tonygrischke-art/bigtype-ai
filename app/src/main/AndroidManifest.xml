@@ -26,7 +26,21 @@
         <service
             android:name=".ime.BigTypeIMEService"
             android:exported="true"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD"
+            android:label="BigType AI Keyboard">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method" />
+        </service>
+
+        <service
+            android:name="com.bigtype.ai.BigTypeKeyboardService"
+            android:exported="true"
+            android:permission="android.permission.BIND_INPUT_METHOD"
+            android:label="BigType AI Keyboard">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
