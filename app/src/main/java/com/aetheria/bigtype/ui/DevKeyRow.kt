@@ -38,7 +38,7 @@ fun DevKeyRow(
         devKeys.forEach { key ->
             val isActive = key.modifierType != null && modifierState.activeModifiers.contains(key.modifierType)
             Button(
-                onClick = { viewModel.onDevKeyPressed(key) },
+                onClick = { viewModel.onDevKeyPressed(key.label) },
                 modifier = Modifier.weight(1f),
                 colors = if (isActive)
                     androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color(0xFF00E5FF))

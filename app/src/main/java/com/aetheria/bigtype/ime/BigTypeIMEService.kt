@@ -31,12 +31,14 @@ class BigTypeIMEService : InputMethodService(),
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
     override val savedStateRegistry get() = savedStateRegistryController.savedStateRegistry
 
-    private val _lifecycle = Lifecycle()
-    override val lifecycle: Lifecycle get() = _lifecycle
+    private var lifecycleRegistry: Lifecycle? = null
+
+    override val lifecycle: Lifecycle
+        get() = lifecycleRegistry ?: throw IllegalStateException("Lifecycle not initialized")
 
     override fun onCreate() {
         savedStateRegistryController.performRestore(null)
-        _lifecycle.currentState = Lifecycle.State.INITIALIZED
+        lifecycleRegistry = Lifecycle()
         super.onCreate()
     }
 
