@@ -30,14 +30,13 @@ class BigTypeIMEService : InputMethodService(),
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
     override val savedStateRegistry get() = savedStateRegistryController.savedStateRegistry
 
-    private val _lifecycleOwner = object : LifecycleOwner {
-        private val _lifecycleRegistry = object : Lifecycle() {
-            override fun getCurrentState(): State = State.INITIALIZED
-            fun setCurrentState(state: State) {
-                // no-op for IME
-            }
+    override val lifecycle: Lifecycle = object : Lifecycle() {
+        private var _currentState = State.INITIALIZED
+        override val currentState: State get() = _currentState
+        
+        fun updateState(state: State) {
+            _currentState = state
         }
-        override val lifecycle: Lifecycle = _lifecycleRegistry
     }
 
     override fun onCreate() {
@@ -48,7 +47,7 @@ class BigTypeIMEService : InputMethodService(),
     override fun onCreateInputView(): View {
         return ComposeView(this).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
-            setViewTreeLifecycleOwner(_lifecycleOwner)
+            setViewTreeLifecycleOwner(this@BigTypeIMEService)
             setViewTreeViewModelStoreOwner(this@BigTypeIMEService)
             setViewTreeSavedStateRegistryOwner(this@BigTypeIMEService)
             setContent {
