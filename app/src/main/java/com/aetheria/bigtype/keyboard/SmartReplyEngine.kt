@@ -20,11 +20,11 @@ class SmartReplyEngine @Inject constructor() {
         val reply = when {
             lower.contains("?") -> SmartReply("Let me help with that!", ReplyType.QUESTION)
             lower.contains("hello") || lower.contains("hi") || lower.contains("hey") -> SmartReply("Hey there! 👋", ReplyType.GREETING)
-            lower.contains("thanks") || lower.contains("thank you") -> SmartReply("You're welcome!", ReplyType.ACKNOWLEDGEMENT)
+            lower.contains("thanks") || lower.contains("thank you") -> SmartReply("You're welcome!", ReplyType.ACKNOWLEDGE)
             lower.contains("function") || lower.contains("def ") || lower.contains("class ") -> SmartReply("Here's what that does:", ReplyType.CODE)
-            else -> SmartReply("Got it", ReplyType.ACKNOWLEDGEMENT)
+            else -> SmartReply("Got it", ReplyType.ACKNOWLEDGE)
         }
-        _replies.value = listOf(reply, SmartReply("Thanks!", ReplyType.ACKNOWLEDGEMENT), SmartReply("Help me", ReplyType.QUESTION))
+        _replies.value = listOf(reply, SmartReply("Thanks!", ReplyType.ACKNOWLEDGE), SmartReply("Help me", ReplyType.QUESTION))
     }
     
     fun clear() { _replies.value = emptyList() }

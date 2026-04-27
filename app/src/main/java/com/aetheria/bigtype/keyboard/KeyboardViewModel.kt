@@ -225,4 +225,14 @@ class KeyboardViewModel @Inject constructor(
             }
         }
     }
+
+    fun onDevKeyPressed(key: String) {
+        // Dev mode key handling - toggle dev features
+        when (key) {
+            "DEV" -> _state.value = _state.value.copy(isDevMode = !_state.value.isDevMode)
+            "HEX" -> toggleLayout()
+            "TERM" -> toggleTerminal()
+            "NUM" -> toggleNumberRow()
+        }
+    }
 }

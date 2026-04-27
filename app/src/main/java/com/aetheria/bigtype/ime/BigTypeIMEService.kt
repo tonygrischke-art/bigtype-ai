@@ -6,6 +6,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.setViewTreeLifecycleOwner
@@ -20,7 +22,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class BigTypeIMEService : InputMethodService(),
     ViewModelStoreOwner,
-    SavedStateRegistryOwner {
+    SavedStateRegistryOwner,
+    LifecycleOwner {
 
     private val _viewModelStore = ViewModelStore()
     override val viewModelStore: ViewModelStore get() = _viewModelStore
@@ -28,8 +31,12 @@ class BigTypeIMEService : InputMethodService(),
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
     override val savedStateRegistry get() = savedStateRegistryController.savedStateRegistry
 
+    private val _lifecycle = Lifecycle()
+    override val lifecycle: Lifecycle get() = _lifecycle
+
     override fun onCreate() {
         savedStateRegistryController.performRestore(null)
+        _lifecycle.currentState = Lifecycle.State.INITIALIZED
         super.onCreate()
     }
 
@@ -62,8 +69,6 @@ class BigTypeIMEService : InputMethodService(),
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
-        attribute?.let {
-        }
     }
 
     override fun onDestroy() {
