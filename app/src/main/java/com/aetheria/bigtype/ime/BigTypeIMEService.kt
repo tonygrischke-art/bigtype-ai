@@ -27,12 +27,14 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
         super.onCreate()
         savedStateRegistryController.performRestore(null)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        setCandidatesViewShown(false)
     }
 
     override fun onCreateInputView(): View {
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-        return ComposeView(this).apply {
+        
+        val keyboardView = ComposeView(this).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
             setViewTreeLifecycleOwner(this@BigTypeIMEService)
             setViewTreeSavedStateRegistryOwner(this@BigTypeIMEService)
@@ -49,6 +51,14 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
                 }
             }
         }
+        
+        setInputView(keyboardView)
+        return keyboardView
+    }
+
+    override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
+        super.onStartInputView(info, restarting)
+        setInputView(onCreateInputView())
     }
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
