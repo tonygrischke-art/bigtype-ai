@@ -1,0 +1,3 @@
+-keepattributes *Annotation*
+-keepclass * extends androidx.room.RoomDatabase
+-keep @dagger.hilt.android.lifecycle.HiltViewModel class * { *; }
