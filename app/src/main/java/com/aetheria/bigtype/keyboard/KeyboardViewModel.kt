@@ -4,14 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aetheria.bigtype.bridge.BridgeClient
 import com.aetheria.bigtype.llm.LLMClient
-import com.aetheria.bigtype.privacy.PrivacyDetector
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,11 +30,9 @@ data class KeyboardState(
     val isTerminalOpen: Boolean = false,
     val bridgeStatus: BridgeStatus = BridgeStatus.OFFLINE,
     val llmStatus: LLMStatus = LLMStatus.OFFLINE,
-    val modifierState: ModifierState = ModifierState(),
     val isOneHanded: Boolean = false,
     val oneHandedSide: String = "left",
     val isTranslateMode: Boolean = false,
-    val translation: String = "",
     val recentEmojis: List<String> = emptyList(),
     val predictedEmojis: List<String> = emptyList(),
     val isDevMode: Boolean = false,
@@ -47,45 +40,29 @@ data class KeyboardState(
     val showNumberRow: Boolean = false,
     val rewriteResult: String = "",
     val isRewriting: Boolean = false,
-    val snippetQuery: String = "",
-    val isSnippetMode: Boolean = false,
     val gitBranch: String = "",
-    val smartReplies: List<String> = emptyList(),
-    val wpm: Int = 0
+    val smartReplies: List<String> = emptyList()
 )
 
-@OptIn(FlowPreview::class)
 @HiltViewModel
 class KeyboardViewModel @Inject constructor(
     private val llmClient: LLMClient,
-    private val bridgeClient: BridgeClient,
-    private val modifierManager: ModifierStateManager,
-    private val glideDecoder: GlideDecoder,
-    private val appProfileManager: AppProfileManager,
-    private val translateEngine: TranslateEngine,
-    private val emojiPredictor: EmojiPredictor,
-    private val autocorrectEngine: AutocorrectEngine,
-    private val privacyDetector: PrivacyDetector
+    private val bridgeClient: BridgeClient
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(KeyboardState())
     val state: StateFlow<KeyboardState> = _state
 
+    private val modifierManager = ModifierStateManager()
+    private val glideDecoder = GlideDecoder()
+    private val appProfileManager = AppProfileManager()
+    private val emojiPredictor = EmojiPredictor()
+    private val autocorrectEngine = AutocorrectEngine()
+    private val privacyDetector = PrivacyDetector()
+    private val translateEngine = TranslateEngine(llmClient)
+
     init {
         checkServicesStatus()
-        setupSuggestionDebounce()
-    }
-
-    private fun setupSuggestionDebounce() {
-        _state
-            .debounce(400)
-            .onEach { state ->
-                if (!state.isPrivacyMode && state.currentText.length >= 2) {
-                    fetchSuggestions(state.currentText, state.vibe)
-                    generateSmartReplies(state.currentText)
-                }
-            }
-            .launchIn(viewModelScope)
     }
 
     private fun checkServicesStatus() {
@@ -127,16 +104,11 @@ class KeyboardViewModel @Inject constructor(
 
     fun onTextChanged(newText: String) {
         if (_state.value.isPrivacyMode) return
-        if (newText.contains(";;")) {
-            val query = newText.substringAfter(";;")
-            _state.value = _state.value.copy(
-                currentText = newText,
-                isSnippetMode = true,
-                snippetQuery = query
-            )
-            return
+        _state.value = _state.value.copy(currentText = newText)
+        if (newText.length >= 2) {
+            fetchSuggestions(newText, _state.value.vibe)
+            generateSmartReplies(newText)
         }
-        _state.value = _state.value.copy(currentText = newText, isSnippetMode = false)
     }
 
     fun setVibe(vibe: VibeMode) {
@@ -227,7 +199,6 @@ class KeyboardViewModel @Inject constructor(
     }
 
     fun onDevKeyPressed(key: String) {
-        // Dev mode key handling - toggle dev features
         when (key) {
             "DEV" -> _state.value = _state.value.copy(isDevMode = !_state.value.isDevMode)
             "HEX" -> toggleLayout()
