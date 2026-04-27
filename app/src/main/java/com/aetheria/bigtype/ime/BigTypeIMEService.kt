@@ -43,6 +43,10 @@ class BigTypeIMEService : InputMethodService(),
         override fun addObserver(observer: LifecycleObserver) {
             // no-op for IME
         }
+
+        override fun removeObserver(observer: LifecycleObserver) {
+            // no-op for IME
+        }
     }
 
     override fun onCreate() {
