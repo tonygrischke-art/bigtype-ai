@@ -192,25 +192,20 @@ fun QwertyGridStandalone(onTextInput: (String) -> Unit, numberRowOnly: Boolean =
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 row.forEach { key ->
-                    FatKeyStandalone(key = key, onTap = { onTextInput(key) })
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .padding(2.dp)
+                            .background(Color(0xFF1E2235))
+                            .clickable { onTextInput(key) },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(key, color = Color(0xFFE8EAF6), fontSize = 16.sp)
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun FatKeyStandalone(key: String, onTap: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .weight(1f)
-            .height(52.dp)
-            .padding(2.dp)
-            .background(Color(0xFF1E2235))
-            .clickable { onTap() },
-        contentAlignment = Alignment.Center
-    ) {
-        Text(key, color = Color(0xFFE8EAF6), fontSize = 16.sp)
     }
 }
 
@@ -238,7 +233,17 @@ fun HexGridStandalone(onTextInput: (String) -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 row.forEach { key ->
-                    FatKeyStandalone(key = key, onTap = { onTextInput(key) })
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .padding(2.dp)
+                            .background(Color(0xFF1E2235))
+                            .clickable { onTextInput(key) },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(key, color = Color(0xFFE8EAF6), fontSize = 16.sp)
+                    }
                 }
             }
         }
