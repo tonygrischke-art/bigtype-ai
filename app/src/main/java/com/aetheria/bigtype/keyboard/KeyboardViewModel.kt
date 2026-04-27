@@ -127,7 +127,7 @@ class KeyboardViewModel @Inject constructor(
 
     fun onTextChanged(newText: String) {
         if (_state.value.isPrivacyMode) return
-        if (newText.contains ";;" ) {
+        if (newText.contains(";;")) {
             val query = newText.substringAfter(";;")
             _state.value = _state.value.copy(
                 currentText = newText,
