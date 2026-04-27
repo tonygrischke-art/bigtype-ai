@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aetheria.bigtype.bridge.BridgeClient
 import com.aetheria.bigtype.llm.LLMClient
+import com.aetheria.bigtype.privacy.PrivacyDetector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
