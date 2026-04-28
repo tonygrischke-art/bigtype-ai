@@ -3,8 +3,16 @@ package com.aetheria.bigtype.ime
 import android.inputmethodservice.InputMethodService
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -13,8 +21,6 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import com.aetheria.bigtype.ui.BigTypeKeyboardScreen
-import com.aetheria.bigtype.ui.theme.BigTypeTheme
 
 class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegistryOwner {
 
@@ -34,31 +40,25 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         
-        val keyboardView = ComposeView(this).apply {
+        return ComposeView(this).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
             setViewTreeLifecycleOwner(this@BigTypeIMEService)
             setViewTreeSavedStateRegistryOwner(this@BigTypeIMEService)
             setContent {
-                BigTypeTheme {
-                    BigTypeKeyboardScreen(
-                        onTextInput = { text -> currentInputConnection?.commitText(text, 1) },
-                        onDelete = { currentInputConnection?.deleteSurroundingText(1, 0) },
-                        onKeyEvent = { keyCode ->
-                            currentInputConnection?.sendKeyEvent(android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, keyCode))
-                            currentInputConnection?.sendKeyEvent(android.view.KeyEvent(android.view.KeyEvent.ACTION_UP, keyCode))
-                        }
-                    )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .background(Color.Red)
+                ) {
+                    Text("COMPOSE WORKS", color = Color.White)
                 }
             }
         }
-        
-        setInputView(keyboardView)
-        return keyboardView
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
-        setInputView(onCreateInputView())
     }
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
