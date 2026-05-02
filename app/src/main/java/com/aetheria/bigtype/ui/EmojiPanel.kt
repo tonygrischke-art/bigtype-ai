@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,44 +19,45 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 @Composable
 fun EmojiPanel(
-    viewModel: KeyboardViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: KeyboardViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
-    val state = viewModel.state.value
+    val state by viewModel.state.collectAsState()
 
     Column(modifier = modifier.padding(8.dp)) {
         TextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Search :rocket:", color = Color(0xFF7986CB)) },
+            label = { Text("Search 🚀", color = Color(0xFF7986CB)) },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.padding(8.dp))
         Text("Recent", color = Color(0xFF7986CB))
         LazyRow {
-            items(state.recentEmojis.size) { index ->
+            items(state.recentEmojis) { emoji ->
                 Text(
-                    text = state.recentEmojis[index],
+                    text = emoji,
                     modifier = Modifier
                         .padding(4.dp)
-                        .clickable { viewModel.onEmojiSelected(state.recentEmojis[index]) }
+                        .clickable { viewModel.onEmojiSelected(emoji) }
                 )
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Text("Predicted", color = Color(0xFF7986CB))
         LazyRow {
-            items(state.predictedEmojis.size) { index ->
+            items(state.predictedEmojis) { emoji ->
                 Text(
-                    text = state.predictedEmojis[index],
+                    text = emoji,
                     modifier = Modifier
                         .padding(4.dp)
-                        .clickable { viewModel.onEmojiSelected(state.predictedEmojis[index]) }
+                        .clickable { viewModel.onEmojiSelected(emoji) }
                 )
             }
         }
