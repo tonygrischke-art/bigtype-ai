@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd /root/bigtype-ai
+cd /data/data/com.termux/files/home/bigtype-ai
 
 echo "=== BigType AI Build Script ==="
 
