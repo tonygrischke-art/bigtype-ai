@@ -1,34 +1,41 @@
-name: Run Tests on Android Emulator
+name: Android Emulator Tests
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  emulator-test:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [21, 26, 30, 34]
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
 
-      - name: Run tests with Android Emulator
+      - name: Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
-          script: ./gradlew connectedCheck
-
-      - name: Capture Logcat
-        if: failure()
-        run: adb logcat -d > logcat.log
-
+          api-level: ${{ matrix.api-level }}
+          target: default
+          arch: x86_64
+          script: ./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.aetheria.bigtype.AetheriaThemeTest
+      
       - name: Upload Logcat on Failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: logcat-output
-          path: logcat.log
+          name: logcat-api-${{ matrix.api-level }}
+          path: app/build/reports/androidTests/connected/flavors/debugAndroidTest/logcat-*.txt
