@@ -21,3 +21,14 @@ jobs:
         with:
           api-level: 29
           script: ./gradlew connectedCheck
+
+      - name: Capture Logcat
+        if: failure()
+        run: adb logcat -d > logcat.log
+
+      - name: Upload Logcat on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logcat-output
+          path: logcat.log
