@@ -31,6 +31,8 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: default
           arch: x86_64
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
           script: ./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.aetheria.bigtype.AetheriaThemeTest
       
       - name: Upload Logcat on Failure
