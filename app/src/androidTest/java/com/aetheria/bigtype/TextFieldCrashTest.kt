@@ -4,9 +4,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.aetheria.bigtype.ui.BigTypeKeyboardScreen
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.AndroidJUnit4
 
 class TextFieldCrashTest {
     @get:Rule
@@ -14,21 +14,22 @@ class TextFieldCrashTest {
 
     @Test
     fun testTextFieldClickDoesNotCrash() {
-        // Test that clicking text field doesn't crash
+        // Test that UI interaction doesn't crash
         composeTestRule.setContent {
             BigTypeKeyboardScreen(
                 onTextInput = { text ->
-                    val ic = currentInputConnection
-                    ic?.commitText(text, 1)
+                    // Simple implementation for test
                 },
                 onDelete = {
-                    val ic = currentInputConnection
-                    ic?.deleteSurroundingText(1, 0)
+                    // Simple implementation for test
+                },
+                onKeyEvent = { keyCode ->
+                    // Simple implementation for test
                 }
             )
         }
         
-        // Try to interact with the UI to see if it crashes
-        // Add specific test for text field interaction
+        // Add actual test logic here
+        // This would test text field interactions
     }
 }
