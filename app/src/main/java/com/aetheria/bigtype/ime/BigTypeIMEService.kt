@@ -50,16 +50,24 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
                 BigTypeKeyboardScreen(
                     onTextInput = { text ->
                         val ic = currentInputConnection
-                        ic?.commitText(text, 1)
+                        if (ic != null) {
+                            ic.commitText(text, 1)
+                        }
                     },
                     onDelete = {
                         val ic = currentInputConnection
-                        ic?.deleteSurroundingText(1, 0)
+                        if (ic != null) {
+                            ic.deleteSurroundingText(1, 0)
+                        }
                     },
                     onKeyEvent = { keyCode ->
                         val ic = currentInputConnection
-                        ic?.sendKeyEvent(android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, keyCode))
-                        ic?.sendKeyEvent(android.view.KeyEvent(android.view.KeyEvent.ACTION_UP, keyCode))
+                        if (ic != null) {
+                            val keyEvent = android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, keyCode)
+                            ic.sendKeyEvent(keyEvent)
+                            keyEvent.action = android.view.KeyEvent.ACTION_UP
+                            ic.sendKeyEvent(keyEvent)
+                        }
                     }
                 )
             }
