@@ -62,3 +62,4 @@ jobs:
       with:
         name: logcat-api-${{ matrix.api-level }}
         path: app/build/reports/androidTests/connected/flavors/debugAndroidTest/logcat-*.txt
+        retention-days: 7
