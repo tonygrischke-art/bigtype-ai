@@ -3,6 +3,7 @@ package com.aetheria.bigtype.ime
 import android.inputmethodservice.InputMethodService
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.KeyEvent
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.Lifecycle
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegistryOwner, ViewModelStoreOwner {
 
     @Inject
-    lateinit var modifierStateManager: ModifierStateManager
+    lateinit var modifierStateManager: com.aetheria.bigtype.keyboard.ModifierStateManager
 
     private val lifecycleRegistry = LifecycleRegistry(this)
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
@@ -67,10 +68,10 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
                     onKeyEvent = { keyCode ->
                         val ic = currentInputConnection
                         if (ic != null) {
-                            val keyEvent = android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, keyCode)
-                            ic.sendKeyEvent(keyEvent)
-                            keyEvent.action = android.view.KeyEvent.ACTION_UP
-                            ic.sendKeyEvent(keyEvent)
+                            val keyDownEvent = KeyEvent(KeyEvent.ACTION_DOWN, keyCode)
+                            ic.sendKeyEvent(keyDownEvent)
+                            val keyUpEvent = KeyEvent(KeyEvent.ACTION_UP, keyCode)
+                            ic.sendKeyEvent(keyUpEvent)
                         }
                     }
                 )

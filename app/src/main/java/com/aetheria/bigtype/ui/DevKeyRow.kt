@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aetheria.bigtype.keyboard.KeyboardViewModel
 import com.aetheria.bigtype.keyboard.ModifierType
-import com.aetheria.bigtype.keyboard.ModifierStateManager
 
 @Composable
 fun DevKeyRow(
-    viewModel: KeyboardViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: KeyboardViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     val modifierState = viewModel.modifierManager.state.value

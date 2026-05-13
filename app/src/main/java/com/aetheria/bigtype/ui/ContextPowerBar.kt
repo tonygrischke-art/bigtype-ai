@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 data class PowerAction(val label: String, val prompt: String)
@@ -31,7 +32,7 @@ val powerActions = listOf(
 )
 
 @Composable
-fun ContextPowerBar(viewModel: KeyboardViewModel, onResult: (String) -> Unit) {
+fun ContextPowerBar(viewModel: KeyboardViewModel = hiltViewModel(), onResult: (String) -> Unit) {
     val state by viewModel.state.collectAsState()
     if (state.isPrivacyMode) return
 
@@ -58,4 +59,3 @@ fun ContextPowerBar(viewModel: KeyboardViewModel, onResult: (String) -> Unit) {
         }
     }
 }
-
