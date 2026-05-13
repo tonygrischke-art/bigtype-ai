@@ -1,3 +1,4 @@
+// DEPRECATED: Use com.aetheria.bigtype.keyboard.SnippetEntity and SnippetDao instead
 package com.aetheria.bigtype.snippets
 
 import androidx.room.Dao

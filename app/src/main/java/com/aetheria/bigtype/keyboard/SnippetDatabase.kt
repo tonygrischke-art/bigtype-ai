@@ -1,3 +1,4 @@
+// DEPRECATED: Use com.aetheria.bigtype.clipboard.BigTypeDatabase instead.
 package com.aetheria.bigtype.keyboard
 
 import androidx.room.Database

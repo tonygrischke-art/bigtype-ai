@@ -38,10 +38,11 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: default
           arch: x86_64
+          ndk: 25.1.8937393
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.aetheria.bigtype.KeyboardUiTest
+          script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.class=com.aetheria.bigtype.KeyboardUiTest
 
       - name: Upload Logcat on Failure
         if: failure()
