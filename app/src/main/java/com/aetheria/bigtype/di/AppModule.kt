@@ -3,6 +3,7 @@ package com.aetheria.bigtype.di
 import android.content.Context
 import androidx.room.Room
 import com.aetheria.bigtype.clipboard.BigTypeDatabase
+import com.aetheria.bigtype.keyboard.ModifierStateManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +23,12 @@ object AppModule {
             BigTypeDatabase::class.java,
             "bigtype.db"
         ).fallbackToDestructiveMigration().build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideModifierStateManager(): ModifierStateManager {
+        return ModifierStateManager()
     }
 
     @Provides

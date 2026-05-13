@@ -20,7 +20,7 @@ fun TranslateRow(
     if (state.isTranslateMode) {
         Row(modifier = modifier) {
             Text(
-                text = "Translation: ${state.translation}",
+                text = "Translation: ${state.rewriteResult}",
                 color = Color(0xFF00E5FF),
                 modifier = Modifier.weight(1f)
             )

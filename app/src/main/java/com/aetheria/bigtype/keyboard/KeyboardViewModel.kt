@@ -48,13 +48,13 @@ data class KeyboardState(
 @HiltViewModel
 class KeyboardViewModel @Inject constructor(
     private val llmClient: LLMClient,
-    private val bridgeClient: BridgeClient
+    private val bridgeClient: BridgeClient,
+    val modifierManager: ModifierStateManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(KeyboardState())
     val state: StateFlow<KeyboardState> = _state
 
-    private val modifierManager = ModifierStateManager()
     private val glideDecoder = GlideDecoder()
     private val appProfileManager = AppProfileManager()
     private val emojiPredictor = EmojiPredictor()

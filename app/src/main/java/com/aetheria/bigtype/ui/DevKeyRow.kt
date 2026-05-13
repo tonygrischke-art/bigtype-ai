@@ -11,13 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.aetheria.bigtype.keyboard.KeyboardViewModel
 import com.aetheria.bigtype.keyboard.ModifierType
+import com.aetheria.bigtype.keyboard.ModifierStateManager
 
 @Composable
 fun DevKeyRow(
     viewModel: KeyboardViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     modifier: Modifier = Modifier
 ) {
-    val modifierState = viewModel.state.value.modifierState
+    val modifierState = viewModel.modifierManager.state.value
     val devKeys = listOf(
         DevKey("Ctrl", ModifierType.CTRL),
         DevKey("Alt", ModifierType.ALT),
