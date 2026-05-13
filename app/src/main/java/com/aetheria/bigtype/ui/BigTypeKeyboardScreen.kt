@@ -1,5 +1,6 @@
 package com.aetheria.bigtype.ui
 
+import androidx.compose.runtime.Composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -25,7 +26,7 @@ fun BigTypeKeyboardScreen(
                 .background(Color(0xFF0D0F1A))
         ) {
             ContextPowerBar(viewModel = viewModel, onResult = {})
-            
+
             SuggestionStrip(
                 viewModel = viewModel,
                 onInsert = { onTextInput(it) }
@@ -35,7 +36,7 @@ fun BigTypeKeyboardScreen(
                 QwertyGrid(
                     viewModel = viewModel,
                     onTextInput = onTextInput,
-                    keys = com.aetheria.bigtype.keyboard.NumberRow.let { listOf(it) }
+                    keys = com.aetheria.bigtype.keyboard.NumberRow
                 )
             }
 

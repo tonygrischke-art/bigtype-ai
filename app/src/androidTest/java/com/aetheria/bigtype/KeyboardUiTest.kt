@@ -4,18 +4,23 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.assertIsDisplayed
 import com.aetheria.bigtype.ui.BigTypeKeyboardScreen
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.HiltAndroidRule
 import org.junit.Rule
 import org.junit.Test
 
+@HiltAndroidTest
 class KeyboardUiTest {
-    @get:Rule
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
     val composeTestRule = createComposeRule()
 
     @Test
     fun testKeyboardDisplaysKeys() {
+        hiltRule.inject()
         composeTestRule.setContent {
-            // In a real scenario, we'd mock the ViewModel or use Hilt
-            // For this exercise, we're verifying the UI can be set up
             BigTypeKeyboardScreen(
                 onTextInput = {},
                 onDelete = {},
