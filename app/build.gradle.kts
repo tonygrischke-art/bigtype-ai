@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.aetheria.bigtype"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
