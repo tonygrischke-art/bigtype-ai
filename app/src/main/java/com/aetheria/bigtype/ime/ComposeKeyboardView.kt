@@ -1,7 +1,6 @@
 package com.aetheria.bigtype.ime
 
 import android.content.Context
-import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.lifecycle.Lifecycle
@@ -102,11 +101,6 @@ class ComposeKeyboardView(
         super.onDetachedFromWindow()
         // The IME service will drive the STOP event explicitly,
         // but guard against being re-attached without a fresh lifecycle.
-    }
-
-    override fun setContent(content: @Composable () -> Unit) {
-        // AbstractComposeView calls this internally — route to the lambda.
-        super.setContent(content)
     }
 
     @Composable
