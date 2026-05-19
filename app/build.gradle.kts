@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "dagger.hilt.android.testing.HiltTestRunner"
+        testInstrumentationRunner = "com.aetheria.bigtype.HiltTestRunner"
     }
 
     buildTypes {
@@ -83,4 +83,7 @@ dependencies {
     // Hilt Testing
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
     kspAndroidTest("com.google.dagger:hilt-compiler:2.50")
+    
+    // Additional Hilt dependencies for testing
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
 }
