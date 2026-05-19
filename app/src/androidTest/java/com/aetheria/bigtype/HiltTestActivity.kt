@@ -1,0 +1,8 @@
+package com.aetheria.bigtype
+
+import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class HiltTestActivity : AppCompatActivity()
