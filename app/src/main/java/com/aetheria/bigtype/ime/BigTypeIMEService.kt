@@ -27,11 +27,10 @@ class BigTypeIMEService : InputMethodService(),
 
     private val lifecycleRegistry = LifecycleRegistry(this)
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
-    private val viewModelStore = ViewModelStore()
 
     override val lifecycle: Lifecycle get() = lifecycleRegistry
     override val savedStateRegistry: SavedStateRegistry get() = savedStateRegistryController.savedStateRegistry
-    override val viewModelStore: ViewModelStore get() = viewModelStore
+    override val viewModelStore: ViewModelStore = ViewModelStore()
 
     @Inject
     lateinit var modifierStateManager: com.aetheria.bigtype.keyboard.ModifierStateManager
