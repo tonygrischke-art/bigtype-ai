@@ -19,7 +19,7 @@ class KeyboardUiTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<androidx.activity.ComponentActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     @Before
     fun setUp() {
