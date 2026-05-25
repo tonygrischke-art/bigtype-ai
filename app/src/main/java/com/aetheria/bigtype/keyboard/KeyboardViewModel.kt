@@ -18,7 +18,7 @@ enum class VibeMode(val emoji: String) {
     ROAST("🔥")
 }
 
-
+enum class ThemeMode { DARK_GLASS, NEON, MINIMAL_WHITE, AETHERIA }
 enum class BridgeStatus { ONLINE, PARTIAL, OFFLINE }
 enum class LLMStatus { ONLINE, OFFLINE }
 

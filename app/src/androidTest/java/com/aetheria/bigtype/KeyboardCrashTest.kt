@@ -21,7 +21,7 @@ class KeyboardCrashTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+    val composeTestRule = createAndroidComposeRule<android.app.Activity>()
 
     @Before
     fun setUp() {

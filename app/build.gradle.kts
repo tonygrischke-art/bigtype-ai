@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.aetheria.bigtype.HiltTestRunner"
+        testInstrumentationRunner = "dagger.hilt.android.testing.HiltTestRunner"
     }
 
     buildTypes {
@@ -50,7 +50,6 @@ android {
 
 dependencies {
     // Core Android
-    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
@@ -84,7 +83,4 @@ dependencies {
     // Hilt Testing
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
     kspAndroidTest("com.google.dagger:hilt-compiler:2.50")
-    
-    // Additional Hilt dependencies for testing
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
 }

@@ -25,6 +25,7 @@ fun QwertyGrid(
     onTextInput: (String) -> Unit,
     keys: List<List<KeyDef>> = QwertyRows
 ) {
+    val state by viewModel.state.collectAsState()
 
     Column(modifier = Modifier.fillMaxWidth().background(Color(0xFF0D0F1A)).padding(vertical = 4.dp)) {
         keys.forEach { row ->

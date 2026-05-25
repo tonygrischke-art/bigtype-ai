@@ -12,7 +12,7 @@ import com.aetheria.bigtype.ui.theme.BigTypeTheme
 
 @Composable
 fun BigTypeKeyboardScreen(
-    viewModel: KeyboardViewModel = hiltViewModel(),
+    viewModel: KeyboardViewModel,
     onTextInput: (String) -> Unit,
     onDelete: () -> Unit,
     onKeyEvent: (Int) -> Unit
@@ -36,7 +36,7 @@ fun BigTypeKeyboardScreen(
                 QwertyGrid(
                     viewModel = viewModel,
                     onTextInput = onTextInput,
-                    keys = listOf(com.aetheria.bigtype.keyboard.NumberRow)
+                    keys = com.aetheria.bigtype.keyboard.NumberRow
                 )
             }
 
