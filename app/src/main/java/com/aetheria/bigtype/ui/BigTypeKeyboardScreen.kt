@@ -36,7 +36,7 @@ fun BigTypeKeyboardScreen(
                 QwertyGrid(
                     viewModel = viewModel,
                     onTextInput = onTextInput,
-                    keys = com.aetheria.bigtype.keyboard.NumberRow
+                    keys = listOf(com.aetheria.bigtype.keyboard.NumberRow)
                 )
             }
 

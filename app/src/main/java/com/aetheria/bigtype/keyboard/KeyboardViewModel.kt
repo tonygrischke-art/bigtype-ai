@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.aetheria.bigtype.keyboard.ThemeMode
 import javax.inject.Inject
 
 enum class VibeMode(val emoji: String) {
@@ -18,7 +19,6 @@ enum class VibeMode(val emoji: String) {
     ROAST("🔥")
 }
 
-enum class ThemeMode { DARK_GLASS, NEON, MINIMAL_WHITE, AETHERIA }
 enum class BridgeStatus { ONLINE, PARTIAL, OFFLINE }
 enum class LLMStatus { ONLINE, OFFLINE }
 
