@@ -16,7 +16,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         multiDexEnabled = true
-        multiDexKeepFile file("multidex-config.txt")
 
         testInstrumentationRunner = "dagger.hilt.android.testing.HiltTestRunner"
     }
