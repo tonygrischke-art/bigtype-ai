@@ -47,7 +47,8 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         Log.d("BigType", "IMEService: creating ComposeView")
 
-        val app = applicationContext as BigTypeApp
+        val app = application as? BigTypeApp
+            ?: throw IllegalStateException("Application is not BigTypeApp")
         val viewModel = androidx.lifecycle.ViewModelProvider(
             this,
             object : androidx.lifecycle.ViewModelProvider.Factory {

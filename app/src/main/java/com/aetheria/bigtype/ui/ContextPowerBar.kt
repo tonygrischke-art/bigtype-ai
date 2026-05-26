@@ -32,7 +32,7 @@ val powerActions = listOf(
 )
 
 @Composable
-fun ContextPowerBar(viewModel: KeyboardViewModel = hiltViewModel(), onResult: (String) -> Unit) {
+fun ContextPowerBar(viewModel: KeyboardViewModel = viewModel(), onResult: (String) -> Unit) {
     val state by viewModel.state.collectAsState()
     if (state.isPrivacyMode) return
 

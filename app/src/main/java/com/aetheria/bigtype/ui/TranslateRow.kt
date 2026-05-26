@@ -14,7 +14,7 @@ import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 @Composable
 fun TranslateRow(
-    viewModel: KeyboardViewModel = hiltViewModel(),
+    viewModel: KeyboardViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
     val state = viewModel.state.value

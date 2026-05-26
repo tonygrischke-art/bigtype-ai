@@ -15,7 +15,7 @@ import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 @Composable
 fun OneHandedHandle(
-    viewModel: KeyboardViewModel = hiltViewModel(),
+    viewModel: KeyboardViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
