@@ -1,11 +1,11 @@
 package com.aetheria.bigtype.privacy
 
 import android.text.InputType
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class PrivacyDetector @Inject constructor() {
+
+
+
+class PrivacyDetector constructor() {
 
     fun isSecureField(inputType: Int): Boolean {
         val variation = inputType and InputType.TYPE_MASK_VARIATION

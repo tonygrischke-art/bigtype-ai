@@ -5,11 +5,11 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class BridgeClient @Inject constructor() {
+
+
+
+class BridgeClient constructor() {
     private val baseUrl = "http://localhost:8000"
 
     suspend fun ping(): Boolean = withContext(Dispatchers.IO) {

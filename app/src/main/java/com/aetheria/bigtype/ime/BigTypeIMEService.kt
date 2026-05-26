@@ -18,18 +18,11 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import com.aetheria.bigtype.BigTypeApp
 import com.aetheria.bigtype.ui.BigTypeKeyboardScreen
 import com.aetheria.bigtype.keyboard.KeyboardViewModel
-import com.aetheria.bigtype.llm.LLMClient
-import com.aetheria.bigtype.bridge.BridgeClient
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegistryOwner, ViewModelStoreOwner {
-
-    @Inject
-    lateinit var modifierStateManager: com.aetheria.bigtype.keyboard.ModifierStateManager
 
     private val lifecycleRegistry = LifecycleRegistry(this)
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
@@ -45,6 +38,7 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
         savedStateRegistryController.performRestore(null)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         setCandidatesViewShown(false)
+        Log.d("BigType", "IMEService.onCreate() finished")
     }
 
     override fun onCreateInputView(): View {
@@ -53,20 +47,22 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         Log.d("BigType", "IMEService: creating ComposeView")
 
-        // Create ViewModel manually — hiltViewModel() doesn't work in IME service
+        val app = applicationContext as BigTypeApp
         val viewModel = androidx.lifecycle.ViewModelProvider(
             this,
             object : androidx.lifecycle.ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
                     return KeyboardViewModel(
-                        llmClient = LLMClient(),
-                        bridgeClient = BridgeClient(),
-                        modifierManager = modifierStateManager,
+                        llmClient = app.llmClient,
+                        bridgeClient = app.bridgeClient,
+                        modifierManager = app.modifierStateManager,
                     ) as T
                 }
             }
         ).get(KeyboardViewModel::class.java)
+
+        Log.d("BigType", "IMEService: ViewModel created, building ComposeView")
 
         return ComposeView(this).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
@@ -79,10 +75,12 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
                     onTextInput = { text ->
                         val ic = currentInputConnection
                         if (ic != null) { ic.commitText(text, 1) }
+                        Log.d("BigType", "Text input: $text")
                     },
                     onDelete = {
                         val ic = currentInputConnection
                         if (ic != null) { ic.deleteSurroundingText(1, 0) }
+                        Log.d("BigType", "Delete pressed")
                     },
                     onKeyEvent = { keyCode ->
                         val ic = currentInputConnection
@@ -90,6 +88,7 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
                             ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, keyCode))
                             ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, keyCode))
                         }
+                        Log.d("BigType", "Key event: $keyCode")
                     }
                 )
             }
@@ -98,9 +97,11 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
+        Log.d("BigType", "IMEService.onStartInput() called, restarting=$restarting")
     }
 
     override fun onDestroy() {
+        Log.d("BigType", "IMEService.onDestroy() called")
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         store.clear()
         super.onDestroy()

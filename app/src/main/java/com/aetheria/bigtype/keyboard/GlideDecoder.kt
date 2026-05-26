@@ -2,11 +2,11 @@ package com.aetheria.bigtype.keyboard
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class GlideDecoder @Inject constructor() {
+
+
+
+class GlideDecoder constructor() {
     private val _glidePath = MutableStateFlow<List<String>>(emptyList())
     val glidePath: StateFlow<List<String>> = _glidePath
 

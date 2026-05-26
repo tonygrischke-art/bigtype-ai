@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -62,10 +61,10 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
-    // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.50")
-    ksp("com.google.dagger:hilt-compiler:2.50")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    // Dagger Hilt - removed, using manual DI
+    // implementation("com.google.dagger:hilt-android:2.50")
+    // ksp("com.google.dagger:hilt-compiler:2.50")
+    // implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
@@ -82,7 +81,7 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
 
-    // Hilt Testing
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
-    kspAndroidTest("com.google.dagger:hilt-compiler:2.50")
+    // Hilt Testing - removed
+    // androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
+    // kspAndroidTest("com.google.dagger:hilt-compiler:2.50")
 }

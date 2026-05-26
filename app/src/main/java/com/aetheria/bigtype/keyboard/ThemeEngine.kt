@@ -2,7 +2,7 @@ package com.aetheria.bigtype.keyboard
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
+
 
 enum class KeyboardTheme(val displayName: String, val baseColor: Long) {
     DARK_GLASS("Dark Glass", 0xFF0D0F1A),
@@ -18,7 +18,7 @@ data class ThemeState(
     val isPulsing: Boolean = false
 )
 
-class ThemeEngine @Inject constructor() {
+class ThemeEngine constructor() {
     private val _state = MutableStateFlow(ThemeState())
     val state: StateFlow<ThemeState> = _state
     

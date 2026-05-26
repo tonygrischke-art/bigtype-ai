@@ -1,10 +1,10 @@
 package com.aetheria.bigtype.keyboard
 
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class AutocorrectEngine @Inject constructor() {
+
+
+
+class AutocorrectEngine constructor() {
     private val commonFixes = mapOf(
         "teh" to "the", "adn" to "and", "hte" to "the",
         "dont" to "don't", "cant" to "can't", "wont" to "won't",

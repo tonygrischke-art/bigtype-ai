@@ -2,8 +2,8 @@ package com.aetheria.bigtype.keyboard
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
-import javax.inject.Singleton
+
+
 
 enum class ModifierType { CTRL, SHIFT, ALT }
 
@@ -14,8 +14,8 @@ data class ModifierState(
     val isAltLocked: Boolean = false
 )
 
-@Singleton
-class ModifierStateManager @Inject constructor() {
+
+class ModifierStateManager constructor() {
     private val _state = MutableStateFlow(ModifierState())
     val state: StateFlow<ModifierState> = _state
 

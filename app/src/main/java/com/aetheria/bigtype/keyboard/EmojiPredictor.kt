@@ -2,11 +2,11 @@ package com.aetheria.bigtype.keyboard
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class EmojiPredictor @Inject constructor() {
+
+
+
+class EmojiPredictor constructor() {
     private val _predictedEmojis = MutableStateFlow<List<String>>(emptyList())
     val predictedEmojis: StateFlow<List<String>> = _predictedEmojis
 

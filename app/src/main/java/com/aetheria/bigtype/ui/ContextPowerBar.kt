@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+
 import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 data class PowerAction(val label: String, val prompt: String)

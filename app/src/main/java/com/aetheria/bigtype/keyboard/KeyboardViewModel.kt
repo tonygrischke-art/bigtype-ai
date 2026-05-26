@@ -5,12 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.aetheria.bigtype.bridge.BridgeClient
 import com.aetheria.bigtype.llm.LLMClient
 import com.aetheria.bigtype.privacy.PrivacyDetector
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import com.aetheria.bigtype.keyboard.ThemeMode
-import javax.inject.Inject
 
 enum class VibeMode(val emoji: String) {
     PROFESSIONAL("💼"),
@@ -45,8 +43,7 @@ data class KeyboardState(
     val smartReplies: List<String> = emptyList()
 )
 
-@HiltViewModel
-class KeyboardViewModel @Inject constructor(
+class KeyboardViewModel(
     private val llmClient: LLMClient,
     private val bridgeClient: BridgeClient,
     val modifierManager: ModifierStateManager

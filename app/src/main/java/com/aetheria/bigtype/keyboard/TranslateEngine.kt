@@ -1,11 +1,11 @@
 package com.aetheria.bigtype.keyboard
 
 import com.aetheria.bigtype.llm.LLMClient
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class TranslateEngine @Inject constructor(
+
+
+
+class TranslateEngine constructor(
     private val llmClient: LLMClient
 ) {
     suspend fun translate(text: String, targetLang: String): String {

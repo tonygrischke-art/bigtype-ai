@@ -1,6 +1,6 @@
 package com.aetheria.bigtype.keyboard
 
-import javax.inject.Inject
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -11,7 +11,7 @@ data class SmartReply(
 
 enum class ReplyType { GREETING, QUESTION, CODE, ACKNOWLEDGE }
 
-class SmartReplyEngine @Inject constructor() {
+class SmartReplyEngine constructor() {
     private val _replies = MutableStateFlow<List<SmartReply>>(emptyList())
     val replies: StateFlow<List<SmartReply>> = _replies
     

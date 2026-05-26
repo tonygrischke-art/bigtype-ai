@@ -6,11 +6,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class LLMClient @Inject constructor() {
+
+
+
+class LLMClient constructor() {
     private val baseUrl = "http://localhost:8080"
 
     suspend fun ping(): Boolean = withContext(Dispatchers.IO) {

@@ -2,11 +2,11 @@ package com.aetheria.bigtype.keyboard
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class AppProfileManager @Inject constructor() {
+
+
+
+class AppProfileManager constructor() {
     private val profiles = mutableMapOf<String, AppProfile>()
     private val _currentProfile = MutableStateFlow<AppProfile?>(null)
     val currentProfile: StateFlow<AppProfile?> = _currentProfile
