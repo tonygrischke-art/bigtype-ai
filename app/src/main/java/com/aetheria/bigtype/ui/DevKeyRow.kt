@@ -15,10 +15,10 @@ import com.aetheria.bigtype.keyboard.ModifierType
 
 @Composable
 fun DevKeyRow(
-    viewModel: KeyboardViewModel = viewModel(),
+    vm: KeyboardViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
-    val modifierState = viewModel.modifierManager.state.value
+    val modifierState = vm.modifierManager.state.value
     val devKeys = listOf(
         DevKey("Ctrl", ModifierType.CTRL),
         DevKey("Alt", ModifierType.ALT),
@@ -39,7 +39,7 @@ fun DevKeyRow(
         devKeys.forEach { key ->
             val isActive = key.modifierType != null && modifierState.activeModifiers.contains(key.modifierType)
             Button(
-                onClick = { viewModel.onDevKeyPressed(key.label) },
+                onClick = { vm.onDevKeyPressed(key.label) },
                 modifier = Modifier.weight(1f),
                 colors = if (isActive)
                     androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color(0xFF00E5FF))

@@ -15,7 +15,7 @@ import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 @Composable
 fun SplitKeyboard(
-    viewModel: KeyboardViewModel = viewModel(),
+    vm: KeyboardViewModel = viewModel(),
     onTextInput: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {

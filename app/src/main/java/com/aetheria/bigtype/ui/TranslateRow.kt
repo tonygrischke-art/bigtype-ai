@@ -14,10 +14,10 @@ import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 @Composable
 fun TranslateRow(
-    viewModel: KeyboardViewModel = viewModel(),
+    vm: KeyboardViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
-    val state = viewModel.state.value
+    val state = vm.state.value
     if (state.isTranslateMode) {
         Row(modifier = modifier) {
             Text(
@@ -28,7 +28,7 @@ fun TranslateRow(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "🌐",
-                modifier = Modifier.clickable { viewModel.toggleTranslateMode() },
+                modifier = Modifier.clickable { vm.toggleTranslateMode() },
                 color = Color(0xFFE8EAF6)
             )
         }

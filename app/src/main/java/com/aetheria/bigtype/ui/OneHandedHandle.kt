@@ -15,17 +15,17 @@ import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 @Composable
 fun OneHandedHandle(
-    viewModel: KeyboardViewModel = viewModel(),
+    vm: KeyboardViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by vm.state.collectAsState()
     if (state.isOneHanded) {
         Box(modifier = modifier.fillMaxWidth()) {
             if (state.oneHandedSide == "left") {
                 Row {
                     Box(modifier = Modifier.weight(3f))
                     Button(
-                        onClick = { viewModel.toggleOneHandedSide() },
+                        onClick = { vm.toggleOneHandedSide() },
                         modifier = Modifier.weight(1f)
                     ) {
                         Text("→", color = Color(0xFFE8EAF6))
@@ -34,7 +34,7 @@ fun OneHandedHandle(
             } else {
                 Row {
                     Button(
-                        onClick = { viewModel.toggleOneHandedSide() },
+                        onClick = { vm.toggleOneHandedSide() },
                         modifier = Modifier.weight(1f)
                     ) {
                         Text("←", color = Color(0xFFE8EAF6))

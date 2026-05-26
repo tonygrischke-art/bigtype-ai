@@ -24,11 +24,11 @@ import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 @Composable
 fun EmojiPanel(
-    viewModel: KeyboardViewModel = viewModel(),
+    vm: KeyboardViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
-    val state by viewModel.state.collectAsState()
+    val state by vm.state.collectAsState()
 
     Column(modifier = modifier.padding(8.dp)) {
         TextField(
@@ -45,7 +45,7 @@ fun EmojiPanel(
                     text = emoji,
                     modifier = Modifier
                         .padding(4.dp)
-                        .clickable { viewModel.onEmojiSelected(emoji) }
+                        .clickable { vm.onEmojiSelected(emoji) }
                 )
             }
         }
@@ -57,7 +57,7 @@ fun EmojiPanel(
                     text = emoji,
                     modifier = Modifier
                         .padding(4.dp)
-                        .clickable { viewModel.onEmojiSelected(emoji) }
+                        .clickable { vm.onEmojiSelected(emoji) }
                 )
             }
         }

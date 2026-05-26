@@ -32,8 +32,8 @@ val powerActions = listOf(
 )
 
 @Composable
-fun ContextPowerBar(viewModel: KeyboardViewModel = viewModel(), onResult: (String) -> Unit) {
-    val state by viewModel.state.collectAsState()
+fun ContextPowerBar(vm: KeyboardViewModel = viewModel(), onResult: (String) -> Unit) {
+    val state by vm.state.collectAsState()
     if (state.isPrivacyMode) return
 
     LazyRow(
@@ -48,7 +48,7 @@ fun ContextPowerBar(viewModel: KeyboardViewModel = viewModel(), onResult: (Strin
                     .clickable {
                         val text = state.currentText
                         if (text.isNotEmpty()) {
-                            viewModel.rewriteSelectedText(text)
+                            vm.rewriteSelectedText(text)
                         }
                     }
                     .padding(horizontal = 12.dp, vertical = 6.dp),
