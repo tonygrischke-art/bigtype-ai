@@ -40,14 +40,17 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("BigType", "IMEService.onCreate() called")
         savedStateRegistryController.performRestore(null)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         setCandidatesViewShown(false)
     }
 
     override fun onCreateInputView(): View {
+        Log.d("BigType", "IMEService.onCreateInputView() called")
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        Log.d("BigType", "IMEService: creating ComposeView")
 
         // Create ViewModel manually — hiltViewModel() doesn't work in IME service
         val viewModel = androidx.lifecycle.ViewModelProvider(

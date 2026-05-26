@@ -1,8 +1,11 @@
 package com.aetheria.bigtype
 
-import androidx.multidex.MultiDexApplication
-import dagger.hilt.android.HiltAndroidApp
+import android.app.Application
+import android.util.Log
 
-@HiltAndroidApp
-class BigTypeApp : MultiDexApplication()
-
+class BigTypeApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        Log.d("BigType", "Application.onCreate() called successfully")
+    }
+}
