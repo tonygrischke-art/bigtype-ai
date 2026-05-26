@@ -1,0 +1,11 @@
+# Multidex keep file - ensure all DEX files are loaded
+# Keep all classes in the main DEX file
+com/aetheria/bigtype/**
+com/aetheria/bigtype/ime/**
+com/aetheria/bigtype/keyboard/**
+com/aetheria/bigtype/llm/**
+com/aetheria/bigtype/bridge/**
+com/aetheria/bigtype/privacy/**
+com/aetheria/bigtype/utils/**
+com/aetheria/bigtype/ui/**
+com/aetheria/bigtype/clipboard/**
