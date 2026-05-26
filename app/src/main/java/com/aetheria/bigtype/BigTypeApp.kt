@@ -1,8 +1,8 @@
 package com.aetheria.bigtype
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class BigTypeApp : Application()
+class BigTypeApp : MultiDexApplication()
 
