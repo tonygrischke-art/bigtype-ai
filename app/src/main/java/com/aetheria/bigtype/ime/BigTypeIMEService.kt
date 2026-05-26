@@ -1,6 +1,7 @@
 package com.aetheria.bigtype.ime
 
 import android.inputmethodservice.InputMethodService
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.KeyEvent
