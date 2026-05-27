@@ -15,7 +15,7 @@ import com.aetheria.bigtype.keyboard.ModifierType
 
 @Composable
 fun DevKeyRow(
-    vm: KeyboardViewModel = viewModel(),
+    vm: KeyboardViewModel,
     modifier: Modifier = Modifier
 ) {
     val modifierState = vm.modifierManager.state.value

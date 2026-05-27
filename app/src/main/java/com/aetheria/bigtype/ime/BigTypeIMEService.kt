@@ -51,9 +51,9 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
             ?: throw IllegalStateException("Application is not BigTypeApp")
 
         // Access companion properties before creating ViewModel to avoid capture issues
-        val llmClient = app.llmClient
-        val bridgeClient = app.bridgeClient
-        val modifierManager = app.modifierStateManager
+        val llmClient = BigTypeApp.llmClient
+        val bridgeClient = BigTypeApp.bridgeClient
+        val modifierManager = BigTypeApp.modifierStateManager
 
         val viewModel = androidx.lifecycle.ViewModelProvider(
             this,

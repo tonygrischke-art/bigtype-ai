@@ -24,7 +24,7 @@ import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 @Composable
 fun EmojiPanel(
-    vm: KeyboardViewModel = viewModel(),
+    vm: KeyboardViewModel,
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
