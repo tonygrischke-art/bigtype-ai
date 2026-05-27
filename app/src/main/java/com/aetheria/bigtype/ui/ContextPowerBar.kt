@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 import com.aetheria.bigtype.keyboard.KeyboardViewModel
 
 data class PowerAction(val label: String, val prompt: String)
@@ -32,12 +31,15 @@ val powerActions = listOf(
 )
 
 @Composable
-fun ContextPowerBar(vm: KeyboardViewModel = viewModel(), onResult: (String) -> Unit) {
-    val state by vm.state.collectAsState()
+fun ContextPowerBar(viewModel: KeyboardViewModel, onResult: (String) -> Unit) {
+    val state by viewModel.state.collectAsState()
     if (state.isPrivacyMode) return
 
     LazyRow(
-        modifier = Modifier.fillMaxWidth().background(Color(0xFF12152A)).padding(horizontal = 8.dp, vertical = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFF12152A))
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         items(powerActions) { action ->
@@ -48,7 +50,7 @@ fun ContextPowerBar(vm: KeyboardViewModel = viewModel(), onResult: (String) -> U
                     .clickable {
                         val text = state.currentText
                         if (text.isNotEmpty()) {
-                            vm.rewriteSelectedText(text)
+                            viewModel.rewriteSelectedText(text)
                         }
                     }
                     .padding(horizontal = 12.dp, vertical = 6.dp),

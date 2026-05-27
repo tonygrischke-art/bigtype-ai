@@ -16,7 +16,7 @@ android {
         versionName = "1.0"
         multiDexEnabled = true
 
-        testInstrumentationRunner = "dagger.hilt.android.testing.HiltTestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {

@@ -49,15 +49,21 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
 
         val app = application as? BigTypeApp
             ?: throw IllegalStateException("Application is not BigTypeApp")
+
+        // Access companion properties before creating ViewModel to avoid capture issues
+        val llmClient = app.llmClient
+        val bridgeClient = app.bridgeClient
+        val modifierManager = app.modifierStateManager
+
         val viewModel = androidx.lifecycle.ViewModelProvider(
             this,
             object : androidx.lifecycle.ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
                     return KeyboardViewModel(
-                        llmClient = app.llmClient,
-                        bridgeClient = app.bridgeClient,
-                        modifierManager = app.modifierStateManager,
+                        llmClient = llmClient,
+                        bridgeClient = bridgeClient,
+                        modifierManager = modifierManager,
                     ) as T
                 }
             }
