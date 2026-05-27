@@ -5,31 +5,25 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.aetheria.bigtype.ui.BigTypeKeyboardScreen
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class KeyboardUiTest {
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<android.app.Activity>()
-
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-    }
+    @get:Rule
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     @Test
     fun testKeyboardDisplaysKeys() {
         composeTestRule.setContent {
             BigTypeKeyboardScreen(
+                viewModel = com.aetheria.bigtype.keyboard.KeyboardViewModel(
+                    llmClient = com.aetheria.bigtype.llm.LLMClient(),
+                    bridgeClient = com.aetheria.bigtype.bridge.BridgeClient(),
+                    modifierManager = com.aetheria.bigtype.keyboard.ModifierStateManager()
+                ),
                 onTextInput = {},
                 onDelete = {},
                 onKeyEvent = {}
