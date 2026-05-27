@@ -26,11 +26,10 @@ import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.ui.graphics.SolidColor
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.aetheria.bigtype.BigTypeApp
 import com.aetheria.bigtype.keyboard.KeyboardViewModel
+import com.aetheria.bigtype.ui.BigTypeKeyboardScreen
 import com.aetheria.bigtype.ui.theme.BigTypeTheme
 import com.aetheria.bigtype.keyboard.ThemeMode
 
@@ -93,36 +92,19 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
                 setViewTreeViewModelStoreOwner(this@BigTypeIMEService)
                 setContent {
                     BigTypeTheme(themeMode = ThemeMode.DARK_GLASS) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color(0xFF0D0F1A))
-                        ) {
-                            // Simple test row - if this shows, Compose works
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                Text("BigType AI", color = Color(0xFF00E5FF), fontSize = 14.sp)
-                                Text("Keyboard", color = Color(0xFF7986CB), fontSize = 14.sp)
+                        BigTypeKeyboardScreen(
+                            viewModel = viewModel,
+                            onTextInput = { text: String ->
+                                currentInputConnection?.commitText(text, 1)
+                            },
+                            onDelete = {
+                                currentInputConnection?.deleteSurroundingText(1, 0)
+                            },
+                            onKeyEvent = { keyCode: Int ->
+                                currentInputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, keyCode))
+                                currentInputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, keyCode))
                             }
-                            // Full keyboard
-                            BigTypeKeyboardScreen(
-                                viewModel = viewModel,
-                                onTextInput = { text ->
-                                    currentInputConnection?.commitText(text, 1)
-                                },
-                                onDelete = {
-                                    currentInputConnection?.deleteSurroundingText(1, 0)
-                                },
-                                onKeyEvent = { keyCode ->
-                                    currentInputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, keyCode))
-                                    currentInputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, keyCode))
-                                }
-                            )
-                        }
+                        )
                     }
                 }
             }
