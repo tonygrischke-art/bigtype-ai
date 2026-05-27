@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 class TextFieldCrashTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+    val composeTestRule = createAndroidComposeRule<androidx.activity.ComponentActivity>()
 
     @Test
     fun testTextFieldInteraction() {

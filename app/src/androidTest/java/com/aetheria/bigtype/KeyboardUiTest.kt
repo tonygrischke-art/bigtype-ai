@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 class KeyboardUiTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+    val composeTestRule = createAndroidComposeRule<androidx.activity.ComponentActivity>()
 
     @Test
     fun testKeyboardDisplaysKeys() {
