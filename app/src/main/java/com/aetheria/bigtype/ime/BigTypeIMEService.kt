@@ -48,14 +48,13 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
         Log.d("BigType", "IMEService.onCreate()")
         savedStateRegistryController.performRestore(null)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         setCandidatesViewShown(false)
         Log.d("BigType", "IMEService.onCreate() finished")
     }
 
     override fun onCreateInputView(): View {
         Log.d("BigType", "IMEService.onCreateInputView() START")
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
         return try {
             val app = application as? BigTypeApp
@@ -112,9 +111,29 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
             Log.d("BigType", "ComposeView created successfully!")
             composeView
 
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.e("BigType", "CRASH in onCreateInputView: ${e.message}", e)
             createErrorView("Error: ${e.message}")
+        }
+    }
+
+    override fun onStartInputView(editorInfo: EditorInfo?, restarting: Boolean) {
+        super.onStartInputView(editorInfo, restarting)
+        Log.d("BigType", "onStartInputView restarting=$restarting")
+        try {
+            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        } catch (e: Exception) {
+            Log.e("BigType", "Error in onStartInputView lifecycle: ${e.message}")
+        }
+    }
+
+    override fun onFinishInputView(finishingInput: Boolean) {
+        super.onFinishInputView(finishingInput)
+        Log.d("BigType", "onFinishInputView finishingInput=$finishingInput")
+        try {
+            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        } catch (e: Exception) {
+            Log.e("BigType", "Error in onFinishInputView lifecycle: ${e.message}")
         }
     }
 
@@ -147,6 +166,7 @@ class BigTypeIMEService : InputMethodService(), LifecycleOwner, SavedStateRegist
 
     override fun onDestroy() {
         Log.d("BigType", "IMEService.onDestroy()")
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         store.clear()
         super.onDestroy()
