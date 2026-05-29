@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
-import com.aetheria.BigTypeIMEService
+import android.widget.LinearLayout
+import android.widget.TextView
 
 /**
  * BigType AI IME Service — feature-rich but crash-proof.
