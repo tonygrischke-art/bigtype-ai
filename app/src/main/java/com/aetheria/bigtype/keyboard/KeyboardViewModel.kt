@@ -102,9 +102,15 @@ class KeyboardViewModel(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoadingSuggestions = true)
             val prompt = "Give 3 short ${vibe.name.lowercase()} completions for: \"$text\". Reply ONLY with completions separated by |"
-            when (val result = withTimeoutAndLogging(OperationTimeouts.IME_MS, "IME completions") {
+            val timed = withTimeoutAndLogging(OperationTimeouts.IME_MS, "IME completions") {
                 llmClient.getCompletions(prompt)
-            }) {
+            }
+            val result: ClientResult<List<String>> = when (timed) {
+                is ClientResult.Success -> timed.data
+                is ClientResult.Failure -> timed
+                is ClientResult.Offline -> ClientResult.Offline(null)
+            }
+            when (result) {
                 is ClientResult.Success -> {
                     val suggestions = result.data.firstOrNull()
                         ?.split("|")?.map { it.trim() }?.take(3) ?: emptyList()
@@ -174,9 +180,15 @@ class KeyboardViewModel(
         if (_state.value.isPrivacyMode || selectedText.isEmpty()) return
         viewModelScope.launch {
             _state.value = _state.value.copy(isRewriting = true)
-            when (val result = withTimeoutAndLogging(OperationTimeouts.BACKGROUND_MS, "Rewrite") {
+            val timed = withTimeoutAndLogging(OperationTimeouts.BACKGROUND_MS, "Rewrite") {
                 llmClient.rewrite(selectedText, _state.value.vibe.name)
-            }) {
+            }
+            val result: ClientResult<String> = when (timed) {
+                is ClientResult.Success -> timed.data
+                is ClientResult.Failure -> timed
+                is ClientResult.Offline -> ClientResult.Offline(null)
+            }
+            when (result) {
                 is ClientResult.Success ->
                     _state.value = _state.value.copy(rewriteResult = result.data, isRewriting = false)
                 is ClientResult.Failure -> {
@@ -273,9 +285,15 @@ class KeyboardViewModel(
         viewModelScope.launch {
             val diff = bridgeClient.getGitDiff()
             if (diff.isNotEmpty()) {
-                when (val result = withTimeoutAndLogging(OperationTimeouts.BACKGROUND_MS, "Commit message") {
+                val timed = withTimeoutAndLogging(OperationTimeouts.BACKGROUND_MS, "Commit message") {
                     llmClient.generateCommitMessage(diff)
-                }) {
+                }
+                val result: ClientResult<String> = when (timed) {
+                    is ClientResult.Success -> timed.data
+                    is ClientResult.Failure -> timed
+                    is ClientResult.Offline -> ClientResult.Offline(null)
+                }
+                when (result) {
                     is ClientResult.Success ->
                         _state.value = _state.value.copy(rewriteResult = result.data)
                     is ClientResult.Failure ->

@@ -18,6 +18,9 @@ class AutocorrectEngine(
         "ive" to "I've", "im" to "I'm", "id" to "I'd"
     )
 
+    // SymSpell fallback over core lexicon (cannibalized from wolfbe6/SymSpell, MIT)
+    private val symSpell = SymSpell(CoreEnglishLexicon.WORDS)
+
     // Fast cache of top-frequency rules; refreshed on write
     @Volatile
     private var topCache: Map<String, String> = emptyMap()
@@ -28,10 +31,15 @@ class AutocorrectEngine(
             .associate { it.fromWord to it.toWord }
     }
 
-    /** Synchronous path (IME hot path): cache then static dict. */
+    /** Synchronous path (IME hot path): cache > static dict > SymSpell. */
     fun correct(word: String): String {
         val key = word.lowercase()
-        return topCache[key] ?: staticFixes[key] ?: word
+        val cached = topCache[key]
+        if (cached != null) return cached
+        val staticFix = staticFixes[key]
+        if (staticFix != null) return staticFix
+        val best = symSpell.lookup(key, 1).firstOrNull()
+        return if (best != null && best.distance in 1..1) best.word else word
     }
 
     /** Async path: full DB lookup. */
