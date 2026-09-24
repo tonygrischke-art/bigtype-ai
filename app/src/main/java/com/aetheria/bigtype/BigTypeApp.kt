@@ -4,6 +4,8 @@ import androidx.multidex.MultiDexApplication
 import android.util.Log
 import com.aetheria.bigtype.llm.LLMClient
 import com.aetheria.bigtype.bridge.BridgeClient
+import com.aetheria.bigtype.config.ClientConfig
+import com.aetheria.bigtype.config.ClientConfigImpl
 import com.aetheria.bigtype.keyboard.ModifierStateManager
 import com.aetheria.bigtype.privacy.PrivacyDetector
 import com.aetheria.bigtype.clipboard.BigTypeDatabase
@@ -24,8 +26,9 @@ class BigTypeApp : MultiDexApplication() {
         Log.d("BigType", "Application.onCreate() called successfully")
 
         // Manual dependency injection
-        llmClient = LLMClient()
-        bridgeClient = BridgeClient()
+        val clientConfig: ClientConfig = ClientConfigImpl(this)
+        llmClient = LLMClient(clientConfig)
+        bridgeClient = BridgeClient(clientConfig)
         modifierStateManager = ModifierStateManager()
         privacyDetector = PrivacyDetector()
         database = Room.databaseBuilder(

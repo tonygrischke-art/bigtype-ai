@@ -11,7 +11,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.aetheria.bigtype.BigTypeApp
 import com.aetheria.bigtype.keyboard.ThemeMode
+import com.aetheria.bigtype.privacy.SecureLogger
 
 /**
  * BigType AI IME Service — renders a visible, properly-sized keyboard.
@@ -25,6 +27,8 @@ class BigTypeIMEService : InputMethodService() {
 
     private var keyboardView: View? = null
     private var currentTheme = ThemeMode.DARK_GLASS
+    private var privacyBanner: TextView? = null
+    private var isPrivacyMode = false
 
     override fun onCreate() {
         super.onCreate()
@@ -73,6 +77,18 @@ class BigTypeIMEService : InputMethodService() {
             val keyBgColor = currentTheme.keyBgColor()
             val specialBgColor = currentTheme.specialBgColor()
             val themeAccent = currentTheme.accentColor()
+
+            // Privacy banner (visible only in secure/banking fields)
+            privacyBanner = TextView(context).apply {
+                text = "\uD83D\uDD12 Private Mode — AI features disabled"
+                setTextColor(0xFFB71C1C.toInt())
+                setBackgroundColor(0xFFFFCDD2.toInt())
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                gravity = Gravity.CENTER
+                setPadding(0, dp(4), 0, dp(4))
+                visibility = if (isPrivacyMode) View.VISIBLE else View.GONE
+            }
+            addView(privacyBanner)
 
             // QWERTY rows
             rows.forEach { row ->
@@ -172,7 +188,24 @@ class BigTypeIMEService : InputMethodService() {
     override fun onStartInputView(editorInfo: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(editorInfo, restarting)
         Log.d("BigType", "onStartInputView restarting=$restarting")
+
+        // Privacy: detect password/banking fields; suppress suggestions via service flag
+        editorInfo?.let { info ->
+            val detector = BigTypeApp.privacyDetector
+            val secure = detector.isSecureField(info.inputType)
+            val banking = detector.isBankingField(info.inputType)
+            isPrivacyMode = secure || banking
+            SecureLogger.d(
+                "Privacy: secure=$secure banking=$banking",
+                isPrivate = isPrivacyMode
+            )
+        }
+        updatePrivacyBanner()
         keyboardView?.setBackgroundColor(currentTheme.bgColor())
+    }
+
+    private fun updatePrivacyBanner() {
+        privacyBanner?.visibility = if (isPrivacyMode) View.VISIBLE else View.GONE
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {

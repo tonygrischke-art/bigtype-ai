@@ -25,6 +25,8 @@ fun BigTypeKeyboardScreen(
                 .fillMaxWidth()
                 .background(Color(0xFF0D0F1A))
         ) {
+            PrivacyModeIndicator(reason = state.privacyReason)
+
             ContextPowerBar(viewModel = viewModel, onResult = {})
 
             SuggestionStrip(

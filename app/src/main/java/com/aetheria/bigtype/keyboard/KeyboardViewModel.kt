@@ -3,8 +3,10 @@ package com.aetheria.bigtype.keyboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aetheria.bigtype.bridge.BridgeClient
+import com.aetheria.bigtype.llm.ClientResult
 import com.aetheria.bigtype.llm.LLMClient
 import com.aetheria.bigtype.privacy.PrivacyDetector
+import com.aetheria.bigtype.privacy.SecureLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,6 +21,7 @@ enum class VibeMode(val emoji: String) {
 
 enum class BridgeStatus { ONLINE, PARTIAL, OFFLINE }
 enum class LLMStatus { ONLINE, OFFLINE }
+enum class PrivacyReason { NONE, SECURE_FIELD, BANKING_APP, USER_DISABLED }
 
 data class KeyboardState(
     val currentText: String = "",
@@ -36,6 +39,8 @@ data class KeyboardState(
     val predictedEmojis: List<String> = emptyList(),
     val isDevMode: Boolean = false,
     val isPrivacyMode: Boolean = false,
+    val privacyReason: PrivacyReason = PrivacyReason.NONE,
+    val isLoadingSuggestions: Boolean = false,
     val showNumberRow: Boolean = false,
     val rewriteResult: String = "",
     val isRewriting: Boolean = false,
@@ -75,15 +80,40 @@ class KeyboardViewModel(
     }
 
     private fun fetchSuggestions(text: String, vibe: VibeMode) {
+        if (_state.value.isPrivacyMode) {
+            SecureLogger.d("Suggestions skipped (privacy mode)", isPrivate = true)
+            return
+        }
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoadingSuggestions = true)
             val prompt = "Give 3 short ${vibe.name.lowercase()} completions for: \"$text\". Reply ONLY with completions separated by |"
-            val results = llmClient.getCompletions(prompt)
-            val suggestions = results.firstOrNull()?.split("|")?.map { it.trim() }?.take(3) ?: emptyList()
-            emojiPredictor.predict(text)
-            _state.value = _state.value.copy(
-                suggestions = suggestions,
-                predictedEmojis = emojiPredictor.predictedEmojis.value
-            )
+            when (val result = llmClient.getCompletions(prompt)) {
+                is ClientResult.Success -> {
+                    val suggestions = result.data.firstOrNull()
+                        ?.split("|")?.map { it.trim() }?.take(3) ?: emptyList()
+                    emojiPredictor.predict(text)
+                    _state.value = _state.value.copy(
+                        suggestions = suggestions,
+                        predictedEmojis = emojiPredictor.predictedEmojis.value,
+                        isLoadingSuggestions = false,
+                        llmStatus = LLMStatus.ONLINE
+                    )
+                }
+                is ClientResult.Failure -> {
+                    SecureLogger.e("Suggestion fetch failed: ${result.error.message}", isPrivate = true)
+                    _state.value = _state.value.copy(
+                        suggestions = emptyList(),
+                        isLoadingSuggestions = false,
+                        llmStatus = LLMStatus.OFFLINE
+                    )
+                }
+                is ClientResult.Offline -> {
+                    _state.value = _state.value.copy(
+                        isLoadingSuggestions = false,
+                        llmStatus = LLMStatus.OFFLINE
+                    )
+                }
+            }
         }
     }
 
@@ -127,8 +157,19 @@ class KeyboardViewModel(
         if (_state.value.isPrivacyMode || selectedText.isEmpty()) return
         viewModelScope.launch {
             _state.value = _state.value.copy(isRewriting = true)
-            val result = llmClient.rewrite(selectedText, _state.value.vibe.name)
-            _state.value = _state.value.copy(rewriteResult = result, isRewriting = false)
+            when (val result = llmClient.rewrite(selectedText, _state.value.vibe.name)) {
+                is ClientResult.Success ->
+                    _state.value = _state.value.copy(rewriteResult = result.data, isRewriting = false)
+                is ClientResult.Failure -> {
+                    SecureLogger.e("Rewrite failed: ${result.error.message}", isPrivate = true)
+                    _state.value = _state.value.copy(rewriteResult = "", isRewriting = false)
+                }
+                is ClientResult.Offline ->
+                    _state.value = _state.value.copy(
+                        rewriteResult = result.cached ?: "",
+                        isRewriting = false
+                    )
+            }
         }
     }
 
@@ -183,15 +224,44 @@ class KeyboardViewModel(
 
     fun detectSecureMode(inputType: Int) {
         val isSecure = privacyDetector.isSecureField(inputType)
-        _state.value = _state.value.copy(isPrivacyMode = isSecure)
+        val isBanking = privacyDetector.isBankingField(inputType)
+        val (isPrivate, reason) = when {
+            isSecure -> true to PrivacyReason.SECURE_FIELD
+            isBanking -> true to PrivacyReason.BANKING_APP
+            else -> false to PrivacyReason.NONE
+        }
+        _state.value = _state.value.copy(
+            isPrivacyMode = isPrivate,
+            privacyReason = reason,
+            llmStatus = if (isPrivate) LLMStatus.OFFLINE else _state.value.llmStatus,
+            suggestions = if (isPrivate) emptyList() else _state.value.suggestions,
+            smartReplies = if (isPrivate) emptyList() else _state.value.smartReplies,
+            isDevMode = if (isPrivate) false else _state.value.isDevMode
+        )
+        SecureLogger.d("Privacy mode: $isPrivate (reason: $reason)", isPrivate = true)
+    }
+
+    fun setPrivacyModeByUser(enabled: Boolean) {
+        _state.value = _state.value.copy(
+            isPrivacyMode = enabled,
+            privacyReason = if (enabled) PrivacyReason.USER_DISABLED else PrivacyReason.NONE,
+            llmStatus = if (enabled) LLMStatus.OFFLINE else _state.value.llmStatus,
+            suggestions = if (enabled) emptyList() else _state.value.suggestions
+        )
     }
 
     fun generateCommitMessage() {
         viewModelScope.launch {
             val diff = bridgeClient.getGitDiff()
             if (diff.isNotEmpty()) {
-                val message = llmClient.generateCommitMessage(diff)
-                _state.value = _state.value.copy(rewriteResult = message)
+                when (val result = llmClient.generateCommitMessage(diff)) {
+                    is ClientResult.Success ->
+                        _state.value = _state.value.copy(rewriteResult = result.data)
+                    is ClientResult.Failure ->
+                        SecureLogger.e("Commit message failed: ${result.error.message}")
+                    is ClientResult.Offline ->
+                        _state.value = _state.value.copy(rewriteResult = result.cached ?: "")
+                }
             }
         }
     }

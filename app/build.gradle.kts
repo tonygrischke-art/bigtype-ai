@@ -20,12 +20,24 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "LLM_URL", "\"http://10.0.2.2:8080\"")
+            buildConfigField("String", "BRIDGE_URL", "\"http://10.0.2.2:8000\"")
+            buildConfigField("long", "LLM_TIMEOUT_MS", "5000L")
+            buildConfigField("long", "BRIDGE_TIMEOUT_MS", "3000L")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            val llmProd = System.getenv("LLM_URL_PROD") ?: "https://api.aetheria.example/v1/llm"
+            val bridgeProd = System.getenv("BRIDGE_URL_PROD") ?: "https://api.aetheria.example/v1/bridge"
+            buildConfigField("String", "LLM_URL", "\"$llmProd\"")
+            buildConfigField("String", "BRIDGE_URL", "\"$bridgeProd\"")
+            buildConfigField("long", "LLM_TIMEOUT_MS", "10000L")
+            buildConfigField("long", "BRIDGE_TIMEOUT_MS", "5000L")
         }
     }
     compileOptions {
@@ -37,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
