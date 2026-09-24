@@ -3,13 +3,13 @@ package com.aetheria.bigtype.llm
 /** Structured error + result types for LLM/Bridge clients. */
 
 sealed class ClientError : Exception() {
-    data class NetworkError(val cause: Throwable, val retryable: Boolean = true) : ClientError() {
+    data class NetworkError(override val cause: Throwable, val retryable: Boolean = true) : ClientError() {
         override val message: String get() = "Network error: ${cause.message}"
     }
     data class TimeoutError(val durationMs: Long) : ClientError() {
         override val message: String get() = "Timeout after ${durationMs}ms"
     }
-    data class ParseError(val response: String, val cause: Throwable) : ClientError() {
+    data class ParseError(val response: String, override val cause: Throwable) : ClientError() {
         override val message: String get() = "Parse error: ${cause.message}"
     }
     data class AuthError(val msg: String) : ClientError() {
