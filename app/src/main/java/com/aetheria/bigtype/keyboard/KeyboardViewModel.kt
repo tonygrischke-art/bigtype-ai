@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.aetheria.bigtype.bridge.BridgeClient
 import com.aetheria.bigtype.llm.ClientResult
 import com.aetheria.bigtype.llm.LLMClient
+import com.aetheria.bigtype.llm.OperationTimeouts
+import com.aetheria.bigtype.llm.withTimeoutAndLogging
 import com.aetheria.bigtype.privacy.PrivacyDetector
 import com.aetheria.bigtype.privacy.SecureLogger
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,12 +62,25 @@ class KeyboardViewModel(
     private val glideDecoder = GlideDecoder()
     private val appProfileManager = AppProfileManager()
     private val emojiPredictor = EmojiPredictor()
-    private val autocorrectEngine = AutocorrectEngine()
+    private val autocorrectEngine = AutocorrectEngine(
+        runCatching { com.aetheria.bigtype.BigTypeApp.database }.getOrNull()
+    )
     private val privacyDetector = PrivacyDetector()
     private val translateEngine = TranslateEngine(llmClient)
 
     init {
         checkServicesStatus()
+        viewModelScope.launch { autocorrectEngine.warmCache() }
+    }
+
+    /** Learning: call when the user accepts an autocorrection. */
+    fun onCorrectionAccepted(original: String) {
+        viewModelScope.launch { autocorrectEngine.learnFromAcceptance(original) }
+    }
+
+    /** Learning: call when the user deletes/rejects an autocorrection. */
+    fun onCorrectionRejected(original: String) {
+        viewModelScope.launch { autocorrectEngine.learnFromDeletion(original) }
     }
 
     private fun checkServicesStatus() {
@@ -87,7 +102,9 @@ class KeyboardViewModel(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoadingSuggestions = true)
             val prompt = "Give 3 short ${vibe.name.lowercase()} completions for: \"$text\". Reply ONLY with completions separated by |"
-            when (val result = llmClient.getCompletions(prompt)) {
+            when (val result = withTimeoutAndLogging(OperationTimeouts.IME_MS, "IME completions") {
+                llmClient.getCompletions(prompt)
+            }) {
                 is ClientResult.Success -> {
                     val suggestions = result.data.firstOrNull()
                         ?.split("|")?.map { it.trim() }?.take(3) ?: emptyList()
@@ -157,7 +174,9 @@ class KeyboardViewModel(
         if (_state.value.isPrivacyMode || selectedText.isEmpty()) return
         viewModelScope.launch {
             _state.value = _state.value.copy(isRewriting = true)
-            when (val result = llmClient.rewrite(selectedText, _state.value.vibe.name)) {
+            when (val result = withTimeoutAndLogging(OperationTimeouts.BACKGROUND_MS, "Rewrite") {
+                llmClient.rewrite(selectedText, _state.value.vibe.name)
+            }) {
                 is ClientResult.Success ->
                     _state.value = _state.value.copy(rewriteResult = result.data, isRewriting = false)
                 is ClientResult.Failure -> {
@@ -254,7 +273,9 @@ class KeyboardViewModel(
         viewModelScope.launch {
             val diff = bridgeClient.getGitDiff()
             if (diff.isNotEmpty()) {
-                when (val result = llmClient.generateCommitMessage(diff)) {
+                when (val result = withTimeoutAndLogging(OperationTimeouts.BACKGROUND_MS, "Commit message") {
+                    llmClient.generateCommitMessage(diff)
+                }) {
                     is ClientResult.Success ->
                         _state.value = _state.value.copy(rewriteResult = result.data)
                     is ClientResult.Failure ->
